@@ -60,17 +60,31 @@ int main(){
 }
 
 int findRoom(int persons[5]){
-	// 배정가능한 방, 방에 있는 사람 count 변수
-    int available_room[5], count = 0;
-	
-	// 방은 5개까지, 사람이 2명 이하면 늘리기
+	// 빈 방의 개수 확인
+    int available_rooms = 0;
     for (int i = 0; i < 5; i++) {
-        if (persons[i] < 2) {
-            available_room[count++] = i + 1;
+        if (persons[i] < 2) { // 방에 자리가 있으면
+            available_rooms++; // 가능한 방 갯수 증가
         }
     }
-	// 방 숫자 return해야하는데 1~5를 랜덤으로 내야하기 때문에 % 써줌
-    return available_room[rand() % count];
+    
+    if (available_rooms == 0) return 0; // 빈 방이 없으면 0 반환
+    
+    // 랜덤하게 빈 방 선택
+    int select_room = rand() % available_rooms + 1; // 1부터 빈 방 개수까지의 랜덤 숫자
+    int count = 0;
+    
+    for (int i = 0; i < 5; i++) {
+        if (persons[i] < 2) { // 방에 자리가 있으면
+            count++;
+            if (count == select_room) {
+                persons[i]++; // 해당 방의 인원 증가
+                return i + 1; // 방 번호는 1부터 5까지라서 i + 1
+            }
+        }
+    }
+    
+    return 0; 
 }
 
 void printReport(char mn[10][20], int mr[10], int mc, char wn[10][20], int wr[10], int wc){
@@ -87,7 +101,7 @@ void printReport(char mn[10][20], int mr[10], int mc, char wn[10][20], int wr[10
 	// 호실별 배정 명단 출력
 	printf("\n 호실별 배정 명단\n"); 
 	for (int i = 1; i <= 5; i++) {  // 101호 ~ 105호 
-		printf("%d : ", 100 + i);   
+		printf("%d호 : ", 100 + i);   
 		for (int j = 0; j < mc; j++) {  // 모든 학생 확인
 			if (mr[j] == 100 + i) {  // 이 학생이 현재 방에 배정됐는지?
 				printf("%s ", mn[j]);  // 그 학생의 이름 출력
